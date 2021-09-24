@@ -1,0 +1,14 @@
+version: '3'
+services:
+  postgres:
+    image: "postgres:11.2"
+    container_name: "nest-template-project"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: 'local_template'
+    volumes:
+      - my_dbdata:/var/lib/postgresql/data
+    command: ["postgres", "-c", "log_statement=all"]
+volumes:
+  my_dbdata:
