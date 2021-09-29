@@ -1,17 +1,20 @@
-import { Body, Controller, Get, Inject, Post, Query } from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import {
     ApiInternalServerErrorResponse,
     ApiNotFoundResponse,
 } from '@nestjs/swagger';
-import { ImageService } from '../../../core/components/image/application/services/ImageService';
-import { GetImageAndTextInput } from '../../../core/components/image/data/input/GetImageAndTextInput';
-import { GetImageThemeInput } from '../../../core/components/image/data/input/GetImageThemeInput';
+import { ImageMergeService } from '../../../core/components/imageMerge/application/services/imageMergeService';
+import { GetImageAndTextInput } from '../../../core/components/imageMerge/data/input/GetImageAndTextInput';
+import { ImageSearchService } from '../../../core/components/imageSearch/application/services/imageSearchService';
+import { GetImageThemeInput } from '../../../core/components/imageSearch/data/input/GetImageThemeInput';
 
 @Controller('image')
 export class ImageController {
     constructor(
-        @Inject(ImageService)
-        private readonly imageService: ImageService,
+        @Inject(ImageSearchService)
+        private readonly imageSearchService: ImageSearchService,
+        @Inject(ImageMergeService)
+        private readonly imageMergeService: ImageMergeService,
     ) { }
 
     @Post('urls')
@@ -20,7 +23,7 @@ export class ImageController {
     public async searchUrls(
         @Body() { theme }: GetImageThemeInput,
     ): Promise<string[]> {
-        return await this.imageService.searchUrls(theme);
+        return await this.imageSearchService.searchUrls(theme);
     }
 
     @Post('merge')
@@ -28,7 +31,7 @@ export class ImageController {
     @ApiNotFoundResponse({ description: 'Not found' })
     public async merge(
         @Body() input: GetImageAndTextInput,
-    ): Promise<void> {
-        return await this.imageService.merge(input);
+    ): Promise<string> {
+        return await this.imageMergeService.merge(input);
     }
 }

@@ -41,11 +41,15 @@ export interface ConfigInterface extends EnvConfigInterface {
         port: number;
     };
     db: {
-        host: string,
-        port: number,
-        username: string,
-        password: string,
+        host: string;
+        port: number;
+        username: string;
+        password: string;
         database: string;
+    };
+    googleSearch: {
+        apiKey: string;
+        cseId: string;
     };
 }
 
@@ -54,7 +58,7 @@ let config: ConfigInterface;
 function configure(): ConfigInterface {
     const nodeEnv = process.env.NODE_ENV || 'local';
     assert(ALLOWED_NODE_ENV.indexOf(nodeEnv) > -1);
-    const path = `env/.env.${nodeEnv}`;
+    const path = `${__dirname}/../../../env/.env.${nodeEnv}`;
     DotEnv.config({ path });
     const envConfig = require(`./${capitalize(nodeEnv)}Config`);
     return {
@@ -82,6 +86,10 @@ function configure(): ConfigInterface {
             username: process.env.TYPEORM_USERNAME || 'postgres',
             password: process.env.TYPEORM_PASSWORD || '',
             database: process.env.TYPEORM_DATABASE || 'postgres',
+        },
+        googleSearch: {
+            apiKey: process.env.SEARCH_GOOGLE_API_KEY,
+            cseId: process.env.SEARCH_GOOGLE_CSE_ID,
         },
         ...envConfig,
     };

@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
-import { ImageUrlApiType } from '../../../core/components/image/port/ImageUrlApi';
+import { ImageSearchUrlApiType } from '../../../core/components/imageSearch/port/ImageSearchUrlApi';
 import { ImageSearchGoogleAdapter } from './api/ImageSearchGoogleAdapter';
 
 @Module({
     providers: [
         {
-            provide: ImageUrlApiType,
+            provide: ImageSearchUrlApiType,
             useClass: ImageSearchGoogleAdapter,
         },
     ],
     exports: [
-        ImageUrlApiType,
+        ImageSearchUrlApiType,
     ],
 })
 export class ImageSearchGoogleModule { }
