@@ -58,7 +58,7 @@ let config: ConfigInterface;
 function configure(): ConfigInterface {
     const nodeEnv = process.env.NODE_ENV || 'local';
     assert(ALLOWED_NODE_ENV.indexOf(nodeEnv) > -1);
-    const path = `${__dirname}/../../../env/.env.${nodeEnv}`;
+    const path = `env/.env.${nodeEnv}`;
     DotEnv.config({ path });
     const envConfig = require(`./${capitalize(nodeEnv)}Config`);
     return {
