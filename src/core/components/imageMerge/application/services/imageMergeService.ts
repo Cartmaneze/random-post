@@ -5,8 +5,8 @@ import * as text2png from 'text2png';
 import { CompositeOpt } from '../../data/CompositeOpt';
 import { Dimension } from '../../data/Dimension';
 import { GetImageAndTextInput } from '../../data/input/GetImageAndTextInput';
-import { ImageBufferByUrlApi, ImageBufferByUrlApiType } from '../../port/ImageBufferByUrlApi';
 import { FileStorage, FileStorageType } from '../../port/FileStorage';
+import { ImageBufferByUrlApi, ImageBufferByUrlApiType } from '../../port/ImageBufferByUrlApi';
 
 @Injectable()
 export class ImageMergeService {
@@ -16,6 +16,20 @@ export class ImageMergeService {
         @Inject(FileStorageType)
         private readonly fileStorage: FileStorage,
     ) { }
+
+    private static chunkString(str, length) {
+        return str.match(new RegExp(`.{1,${length}}`, 'g'));
+    }
+
+    private static createTextPng(text: string, textSize: number, textColor: string): Buffer {
+        return text2png(text, {
+            font: `${textSize}px sans-serif`,
+            color: textColor,
+            padding: 30,
+            lineSpacing: 10,
+            output: 'buffer',
+        });
+    }
 
     public async merge(input: GetImageAndTextInput): Promise<string> {
         const { imageUrl, wtmkUrl, text, textSize, textColor, textPos, wtmkPos } = input;
@@ -31,7 +45,7 @@ export class ImageMergeService {
 
     private async getCompositeOptions(wtmkUrl, wtmkPosition, text, textSize, textPos, textColor): Promise<CompositeOpt[]> {
         const options: CompositeOpt[] = [];
-        const textBuffer: Buffer = this.createTextPng(text, textSize, textColor);
+        const textBuffer: Buffer = ImageMergeService.createTextPng(text, textSize, textColor);
         options.push({ input: textBuffer, gravity: textPos });
         if (wtmkUrl) {
             const watermarkBuffer: Buffer = await this.getBuffer(wtmkUrl);
@@ -44,16 +58,6 @@ export class ImageMergeService {
         return this.imageBufferReceiver.getBufferByUrl(url);
     }
 
-    private createTextPng(text: string, textSize: number, textColor: string): Buffer {
-        return text2png(text, {
-            font: `${textSize}px sans-serif`,
-            color: textColor,
-            padding: 30,
-            lineSpacing: 10,
-            output: 'buffer',
-        });
-    }
-
     private textWithCarriageReturn(text: string, textSize: number, imageWidth: number): string {
         const maxWidth = imageWidth * 0.999;
         const maxLetterCount = Math.floor(maxWidth / textSize);
@@ -63,7 +67,7 @@ export class ImageMergeService {
         textArray.forEach(word => {
             if (line.length + word.length >= maxLetterCount) {
                 if (word.length >= maxLetterCount) {
-                    const chunks = this.chunkString(line + word, maxLetterCount);
+                    const chunks = ImageMergeService.chunkString(line + word, maxLetterCount);
                     for (let i = 0; i < chunks.length - 1; i++) {
                         lines.push(chunks[i]);
                     }
@@ -80,9 +84,5 @@ export class ImageMergeService {
         lines = lines.filter(line => line !== '');
         line = lines.join('\n');
         return line;
-    }
-
-    private chunkString(str, length) {
-        return str.match(new RegExp(`.{1,${length}}`, 'g'));
     }
 }
