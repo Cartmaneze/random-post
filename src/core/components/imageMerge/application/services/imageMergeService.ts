@@ -26,7 +26,7 @@ export class ImageMergeService {
         const mergedImageBuffer = await sharp(imageBuffer)
             .composite(compositeOptions)
             .toBuffer();
-        return this.fileStorage.upload('images/', mergedImageBuffer);
+        return this.fileStorage.upload('', mergedImageBuffer);
     }
 
     private async getCompositeOptions(wtmkUrl, wtmkPosition, text, textSize, textPos, textColor): Promise<CompositeOpt[]> {
