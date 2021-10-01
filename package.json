@@ -39,6 +39,7 @@
     "@sentry/integrations": "^5.18.0",
     "@sentry/node": "^5.18.0",
     "appmetrics": "^5.1.1",
+    "aws-sdk": "^2.998.0",
     "buffer-image-size": "^0.6.4",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.12.2",
@@ -58,7 +59,8 @@
     "text2png": "^2.3.0",
     "tslint": "^6.1.2",
     "typeorm": "^0.2.25",
-    "typeorm-transactional-cls-hooked": "^0.1.12"
+    "typeorm-transactional-cls-hooked": "^0.1.12",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@nestjs/testing": "^7.2.0",

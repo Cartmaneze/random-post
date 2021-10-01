@@ -5,12 +5,15 @@ import * as text2png from 'text2png';
 import { Dimension } from '../../data/Dimension';
 import { GetImageAndTextInput } from '../../data/input/GetImageAndTextInput';
 import { ImageBufferByUrlApi, ImageBufferByUrlApiType } from '../../port/ImageBufferByUrlApi';
+import { SaveImageToS3Api, SaveImageToS3ApiType } from '../../port/SaveImageToS3Api';
 
 @Injectable()
 export class ImageMergeService {
     constructor(
         @Inject(ImageBufferByUrlApiType)
         private readonly imageBufferReceiver: ImageBufferByUrlApi,
+        @Inject(SaveImageToS3ApiType)
+        private readonly imageSaver: SaveImageToS3Api,
     ) { }
 
     public async merge(input: GetImageAndTextInput): Promise<string> {
@@ -20,9 +23,10 @@ export class ImageMergeService {
         const processedText = this.textWithCarriageReturn (text, textSize, dimensions.width);
         const textBuffer: Buffer = this.createTextPng(processedText, textSize, textColor);
         // TODO toBuffer
-        await sharp(imageBuffer)
+        const mergedImageBuffer = await sharp(imageBuffer)
             .composite([ { input: 'watermark.png', gravity: watermarkPosition }, { input: textBuffer, gravity: textPosition } ])
-            .toFile('test.jpeg');
+            .toBuffer();
+        await this.imageSaver.saveToS3(mergedImageBuffer);
         return '';
     }
 

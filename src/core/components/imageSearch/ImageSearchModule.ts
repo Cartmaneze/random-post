@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ImageSearchGoogleModule } from '../../../secondaryAdapters/imageSearchGoogle/imageSearch/ImageSearchGoogleModule';
+import { ImageSearchGoogleModule } from '../../../secondaryAdapters/googleSearch/imageSearch/ImageSearchGoogleModule';
 import { ImageSearchService } from './application/services/imageSearchService';
 
 @Module({
