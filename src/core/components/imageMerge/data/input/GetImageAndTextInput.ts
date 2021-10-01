@@ -3,7 +3,8 @@ import { IsNumber, IsString } from 'class-validator';
 
 export class GetImageAndTextInput {
     @IsString()
-    url: string;
+    imageUrl: string;
+    wtmkUrl: string | null;
     @IsString()
     text: string;
     @IsNumber()
@@ -11,7 +12,7 @@ export class GetImageAndTextInput {
     @IsString()
     textColor: string;
     @IsString()
-    textPosition: string;
+    textPos: string;
     @IsString()
-    watermarkPosition: string;
+    wtmkPos: string;
 }

@@ -2,30 +2,46 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as sizeOf from 'buffer-image-size';
 import * as sharp from 'sharp';
 import * as text2png from 'text2png';
+import { CompositeOpt } from '../../data/CompositeOpt';
 import { Dimension } from '../../data/Dimension';
 import { GetImageAndTextInput } from '../../data/input/GetImageAndTextInput';
 import { ImageBufferByUrlApi, ImageBufferByUrlApiType } from '../../port/ImageBufferByUrlApi';
-import { SaveImageToS3Api, SaveImageToS3ApiType } from '../../port/SaveImageToS3Api';
+import { FileStorage, FileStorageType } from '../../port/FileStorage';
 
 @Injectable()
 export class ImageMergeService {
     constructor(
         @Inject(ImageBufferByUrlApiType)
         private readonly imageBufferReceiver: ImageBufferByUrlApi,
-        @Inject(SaveImageToS3ApiType)
-        private readonly imageSaver: SaveImageToS3Api,
+        @Inject(FileStorageType)
+        private readonly fileStorage: FileStorage,
     ) { }
 
-    public async merge(input: GetImageAndTextInput): Promise<void> {
-        const { url, text, textSize, textColor, textPosition, watermarkPosition } = input;
-        const imageBuffer: Buffer = await this.imageBufferReceiver.getBufferByUrl(url);
+    public async merge(input: GetImageAndTextInput): Promise<string> {
+        const { imageUrl, wtmkUrl, text, textSize, textColor, textPos, wtmkPos } = input;
+        const imageBuffer: Buffer = await this.getBuffer(imageUrl);
         const dimensions: Dimension = sizeOf(imageBuffer);
         const processedText = this.textWithCarriageReturn (text, textSize, dimensions.width);
-        const textBuffer: Buffer = this.createTextPng(processedText, textSize, textColor);
+        const compositeOptions: CompositeOpt[] = await this.getCompositeOptions(wtmkUrl, wtmkPos, processedText, textSize, textPos, textColor);
         const mergedImageBuffer = await sharp(imageBuffer)
-            .composite([ { input: 'watermark.png', gravity: watermarkPosition }, { input: textBuffer, gravity: textPosition } ])
+            .composite(compositeOptions)
             .toBuffer();
-        await this.imageSaver.saveToS3(mergedImageBuffer);
+        return this.fileStorage.upload('images/', mergedImageBuffer);
+    }
+
+    private async getCompositeOptions(wtmkUrl, wtmkPosition, text, textSize, textPos, textColor): Promise<CompositeOpt[]> {
+        const options: CompositeOpt[] = [];
+        const textBuffer: Buffer = this.createTextPng(text, textSize, textColor);
+        options.push({ input: textBuffer, gravity: textPos });
+        if (wtmkUrl) {
+            const watermarkBuffer: Buffer = await this.getBuffer(wtmkUrl);
+            options.push({ input: watermarkBuffer, gravity: wtmkPosition });
+        }
+        return options;
+    }
+
+    private async getBuffer(url: string): Promise<Buffer> {
+        return this.imageBufferReceiver.getBufferByUrl(url);
     }
 
     private createTextPng(text: string, textSize: number, textColor: string): Buffer {

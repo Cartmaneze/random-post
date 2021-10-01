@@ -1,18 +1,21 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
-import { SaveImageToS3Api } from '../../../../core/components/imageMerge/port/SaveImageToS3Api';
 import { Readable } from 'stream';
+import { FileStorage } from '../../../../core/components/imageMerge/port/FileStorage';
+import { S3Client } from '../data/S3Client';
+import { S3Params } from '../data/S3Params';
 
 @Injectable()
-export class SaveImageToS3Adapter implements SaveImageToS3Api {
+export class SaveImageToS3Adapter implements FileStorage {
+    private s3Client: S3Client;
 
-    public async saveToS3(buffer: Buffer): Promise<void> {
-        const readableInstanceStream = this.createReadableStream(buffer);
-        const uploadParams = { Bucket: 'random-post-bucket', Key: Date.now().toString(), Body: readableInstanceStream };
-        await this.upload(uploadParams);
+    public async upload(path: string, buffer: Buffer): Promise<string> {
+        const readableInstanceStream: Readable = this.createReadableStream(buffer);
+        const uploadParams: S3Params = { Bucket: 'random-post-bucket', Key: `${path}${Date.now().toString()}`, Body: readableInstanceStream };
+        return this.uploadToS3(uploadParams);
     }
 
-    private createReadableStream(buffer: Buffer) {
+    private createReadableStream(buffer: Buffer): Readable {
         return new Readable({
             read() {
                 this.push(buffer);
@@ -21,17 +24,24 @@ export class SaveImageToS3Adapter implements SaveImageToS3Api {
         });
     }
 
-    private upload(uploadParams) {
-        const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
+    private async uploadToS3(uploadParams): Promise<string> {
+        const s3Client: S3Client = await this.getS3Client();
         return new Promise((resolve, reject) => {
-            s3.upload(uploadParams, (err, data) => {
+            s3Client.upload(uploadParams, (err, data) => {
                 if (err) {
                     reject(new InternalServerErrorException(err));
                 } if (data) {
-                    resolve(true);
+                    resolve(data.Location);
                 }
             });
         });
+    }
+
+    private async getS3Client(): Promise<S3Client> {
+        if (!this.s3Client) {
+            return new AWS.S3({ apiVersion: '2006-03-01' });
+        }
+        return this.s3Client;
     }
 
 }
