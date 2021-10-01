@@ -31,7 +31,7 @@ export class ImageController {
     @ApiNotFoundResponse({ description: 'Not found' })
     public async merge(
         @Body() input: GetImageAndTextInput,
-    ): Promise<string> {
+    ): Promise<void> {
         return await this.imageMergeService.merge(input);
     }
 }

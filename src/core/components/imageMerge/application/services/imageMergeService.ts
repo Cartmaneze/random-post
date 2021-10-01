@@ -16,18 +16,16 @@ export class ImageMergeService {
         private readonly imageSaver: SaveImageToS3Api,
     ) { }
 
-    public async merge(input: GetImageAndTextInput): Promise<string> {
+    public async merge(input: GetImageAndTextInput): Promise<void> {
         const { url, text, textSize, textColor, textPosition, watermarkPosition } = input;
         const imageBuffer: Buffer = await this.imageBufferReceiver.getBufferByUrl(url);
         const dimensions: Dimension = sizeOf(imageBuffer);
         const processedText = this.textWithCarriageReturn (text, textSize, dimensions.width);
         const textBuffer: Buffer = this.createTextPng(processedText, textSize, textColor);
-        // TODO toBuffer
         const mergedImageBuffer = await sharp(imageBuffer)
             .composite([ { input: 'watermark.png', gravity: watermarkPosition }, { input: textBuffer, gravity: textPosition } ])
             .toBuffer();
         await this.imageSaver.saveToS3(mergedImageBuffer);
-        return '';
     }
 
     private createTextPng(text: string, textSize: number, textColor: string): Buffer {
