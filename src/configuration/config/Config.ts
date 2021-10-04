@@ -51,6 +51,10 @@ export interface ConfigInterface extends EnvConfigInterface {
         apiKey: string;
         cseId: string;
     };
+    credentials: {
+        user: string;
+        password: string
+    };
 }
 
 let config: ConfigInterface;
@@ -90,6 +94,10 @@ function configure(): ConfigInterface {
         googleSearch: {
             apiKey: process.env.SEARCH_GOOGLE_API_KEY,
             cseId: process.env.SEARCH_GOOGLE_CSE_ID,
+        },
+        credentials: {
+            user: process.env.USERNAME,
+            password: process.env.PASSWORD,
         },
         ...envConfig,
     };

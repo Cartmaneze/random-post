@@ -4,6 +4,7 @@ import { initializeTransactionalContext, patchTypeORMRepositoryWithBaseRepositor
 
 import { initDocs, setupApi, setupSentry } from './AppInitializer';
 import { AppModule } from './AppModule';
+import { BasicGuard } from './configuration/BasicGuard';
 import config from './configuration/config/Config';
 import { AllExceptionsFilter } from './configuration/HttpExceptionFilter';
 import { startServerMonitoring } from './configuration/monitoring/appmetrics';
@@ -15,6 +16,7 @@ async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
     app.set('trust proxy', true);
     app.useGlobalFilters(new AllExceptionsFilter());
+    app.useGlobalGuards(new BasicGuard());
     app.enableShutdownHooks();
     setupSentry(app);
     setupApi(app);
