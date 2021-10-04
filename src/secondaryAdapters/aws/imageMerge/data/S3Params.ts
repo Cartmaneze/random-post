@@ -4,4 +4,5 @@ export class S3Params {
     Bucket: string;
     Key: string;
     Body: Readable;
+    ACL: string;
 }

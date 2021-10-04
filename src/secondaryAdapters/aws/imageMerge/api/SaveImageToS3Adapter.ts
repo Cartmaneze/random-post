@@ -11,7 +11,12 @@ export class SaveImageToS3Adapter implements FileStorage {
 
     public async upload(path: string, buffer: Buffer): Promise<string> {
         const readableInstanceStream: Readable = this.createReadableStream(buffer);
-        const uploadParams: S3Params = { Bucket: 'random-post-bucket', Key: `${path}${Date.now().toString()}`, Body: readableInstanceStream };
+        const uploadParams: S3Params = {
+            Bucket: 'random-post-bucket',
+            Key: `${path}${Date.now().toString()}.jpeg`,
+            Body: readableInstanceStream,
+            ACL: 'public-read',
+        };
         return this.uploadToS3(uploadParams);
     }
 
@@ -39,7 +44,7 @@ export class SaveImageToS3Adapter implements FileStorage {
 
     private async getS3Client(): Promise<S3Client> {
         if (!this.s3Client) {
-            return new AWS.S3({ apiVersion: '2006-03-01' });
+            return new AWS.S3({ apiVersion: '2006-03-01', region: 'eu-central-1' });
         }
         return this.s3Client;
     }
