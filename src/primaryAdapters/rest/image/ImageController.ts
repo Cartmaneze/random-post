@@ -1,7 +1,7 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import {
     ApiInternalServerErrorResponse,
-    ApiNotFoundResponse,
+    ApiNotFoundResponse, ApiOkResponse,
 } from '@nestjs/swagger';
 import { ImageMergeService } from '../../../core/components/imageMerge/application/services/imageMergeService';
 import { GetImageAndTextInput } from '../../../core/components/imageMerge/data/input/GetImageAndTextInput';
@@ -18,6 +18,7 @@ export class ImageController {
     ) { }
 
     @Post('urls')
+    @ApiOkResponse({ status: 200 })
     @ApiInternalServerErrorResponse({ description: 'Internal error' })
     @ApiNotFoundResponse({ description: 'Not found' })
     public async searchUrls(
@@ -27,6 +28,7 @@ export class ImageController {
     }
 
     @Post('merge')
+    @ApiOkResponse({ status: 201 })
     @ApiInternalServerErrorResponse({ description: 'Internal error' })
     @ApiNotFoundResponse({ description: 'Not found' })
     public async merge(
