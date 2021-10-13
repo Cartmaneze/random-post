@@ -15,6 +15,14 @@ WORKDIR /app
 
 ADD package*.json /app/
 
+RUN apk add --no-cache \
+        build-base \
+        g++ \
+        cairo-dev \
+        jpeg-dev \
+        pango-dev \
+        giflib-dev
+
 RUN npm install
 
 ADD dist /app/dist/
