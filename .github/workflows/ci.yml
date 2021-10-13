@@ -27,12 +27,12 @@ jobs:
         run: npm i -g eslint audit-ci typescript
       - name: Install project dependencies
         run: npm i
-      - name: Run linter
-        run: npm run eslint
-      #      - name: Deps security check
-      #        run: audit-ci --moderate
-      - name: Generate prisma client
-        run: npm run prisma:generate
+     # - name: Run linter
+     #   run: npm run tslint
+     #       - name: Deps security check
+     #         run: audit-ci --moderate
+     # - name: Generate prisma client
+     #   run: npm run prisma:generate
       - name: Build project
         run: npm run build
       - name: Archive dist
