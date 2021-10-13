@@ -43,13 +43,13 @@ jobs:
 
   build_docker:
     runs-on: ubuntu-latest
-    needs: checks_build_test
-    if:
-      contains('
-      refs/heads/dev
-      refs/heads/staging
-      refs/heads/main
-      ', github.ref)
+      #  needs: checks_build_test
+      #  if:
+      #    contains('
+      #   refs/heads/dev
+      #   refs/heads/staging
+      #   refs/heads/main
+    #   ', github.ref)
     steps:
       - uses: actions/checkout@v2
       - name: Download dist back
