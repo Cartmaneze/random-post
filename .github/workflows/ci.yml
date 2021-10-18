@@ -6,7 +6,7 @@ env:
   AWS_DEFAULT_REGION: "eu-central-1"
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  DOCKER_REPO: "ecr repo"
+  DOCKER_REPO: ${{ secrets.AWS_REPO }}
   DOCKER_REPO_HOST: "ecr host"
 jobs:
   checks_build_test:
