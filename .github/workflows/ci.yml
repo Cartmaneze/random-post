@@ -60,10 +60,8 @@ jobs:
         run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
       - name: Set ENV
         run: echo "ENV=$($(pwd)/deploy/branch_name_to_env.sh)" >> $GITHUB_ENV
-      - name: Set DOCKER_REPO_SUFFIX
-        run: echo "DOCKER_REPO_SUFFIX=${ENV}" >> $GITHUB_ENV
       - name: Set DOCKER_REPO_URL
-        run: echo "DOCKER_REPO_URL=${DOCKER_REPO_HOST}${DOCKER_REPO_SUFFIX}" >> $GITHUB_ENV
+        run: echo "DOCKER_REPO_URL=${DOCKER_REPO_HOST}" >> $GITHUB_ENV
       - name: Set IMAGE_TAG
         run: echo "IMAGE_TAG=${DOCKER_REPO_URL}:latest" >> $GITHUB_ENV
       - name: Login ECR
