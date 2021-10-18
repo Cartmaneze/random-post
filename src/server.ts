@@ -23,6 +23,5 @@ async function bootstrap() {
     initDocs(app);
     await app.listen(8080, config.host);
 }
-
 // tslint:disable-next-line:no-floating-promises
 bootstrap();
