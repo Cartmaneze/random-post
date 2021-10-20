@@ -23,9 +23,9 @@ RUN apk add --update --no-cache \
     giflib-dev \
     pango-dev
 
-RUN npm install
-
 RUN npm i canvas --build-from-source
+
+RUN npm install
 
 ADD dist /app/dist/
 
