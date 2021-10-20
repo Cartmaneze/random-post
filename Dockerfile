@@ -15,8 +15,6 @@ WORKDIR /app
 
 ADD package*.json /app/
 
-RUN npm install
-
 RUN apk add --update --no-cache \
     make \
     g++ \
@@ -24,6 +22,10 @@ RUN apk add --update --no-cache \
     cairo-dev \
     giflib-dev \
     pango-dev
+
+RUN npm install
+
+RUN npm i canvas --build-from-source
 
 ADD dist /app/dist/
 
