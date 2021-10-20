@@ -31,8 +31,10 @@ RUN apk add --no-cache \
 RUN apk --no-cache add ca-certificates wget  && \
         wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
         wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.29-r0/glibc-2.29-r0.apk && \
+        wget https://github.com/Automattic/node-canvas/releases/canvas-v2.8.0-node-v79-linux-glibc-x64.tar.gz && \
         apk add glibc-2.29-r0.apk && \
-        npm install canvas@2.8.0
+        npm install canvas@2.8.0 && \
+        wget https://github.com/Automattic/node-canvas/releases/canvas-v2.8.0-node-v79-linux-glibc-x64.tar.gz
 
 RUN npm install
 
