@@ -23,7 +23,7 @@ export class ImageMergeService {
 
     private static createTextPng(text: string, textSize: number, textColor: string): Buffer {
         return text2png(text, {
-            font: `${textSize}px`,
+            font: `${textSize}px font-bakoma`,
             color: textColor,
             padding: 30,
             lineSpacing: 10,
