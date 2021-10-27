@@ -20,8 +20,8 @@ jobs:
         with:
           command: |
             aws ecr get-login-password --region $AWS_DEFAULT_REGION | sudo docker login --username AWS --password-stdin $DOCKER_REPO
-            sudo docker pull "$DOCKER_REPO:latest"
-            sudo docker run -p 80:8080 $DOCKER_REPO
+            sudo docker pull "${{ secrets.AWS_REPO }}:latest"
+            sudo docker run -p 80:8080 ${{ secrets.AWS_REPO }}
           host: ${{ secrets.EC2_HOST }}
           user: ${{ secrets.EC2_USER }}
           key: ${{ secrets.PEM}}
