@@ -10,7 +10,7 @@ env:
   DOCKER_REPO_HOST: ${{ secrets.AWS_REPO_HOST }}
   EC2_HOST: ${{ secrets.EC2_HOST }}
   EC2_USER: ${{ secrets.EC2_USER }}
-  PEM: ${{ secrets.PEM }}
+  KEY: ${{ secrets.PEM }}
 jobs:
   checks_build_test:
     runs-on: ubuntu-latest
@@ -79,7 +79,7 @@ jobs:
     needs: build_docker
     steps:
       - name: ssh to remote server
-        run: ssh -i ${PEM} ${EC2_USER}@${EC2_HOST}
+        run: echo ${KEY} | ssh -i /dev/stdin ${EC2_USER}@${EC2_HOST} command
       - name: aws login, docker login
         run: aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $DOCKER_REPO
       - name: docker pull
