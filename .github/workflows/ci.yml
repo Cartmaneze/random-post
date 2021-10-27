@@ -19,10 +19,10 @@ jobs:
         uses: fifsky/ssh-action@master
         with:
           command: |
-            aws ecr get-login-password --region ${{AWS_DEFAULT_REGION}} | sudo docker login --username AWS --password-stdin ${{DOCKER_REPO_HOST}}
-            sudo docker pull "${{DOCKER_REPO_HOST}}:latest"
+            aws ecr get-login-password --region ${{env.AWS_DEFAULT_REGION}} | sudo docker login --username AWS --password-stdin ${{env.DOCKER_REPO_HOST}}
+            sudo docker pull "${{env.DOCKER_REPO_HOST}}:latest"
             cd env
-            sudo docker run --env-file 1.env -p 80:8080 "${{DOCKER_REPO_HOST}}:latest" | exit
+            sudo docker run --env-file 1.env -p 80:8080 "${{env.DOCKER_REPO_HOST}}:latest" | exit
           host: ${{ secrets.EC2_HOST }}
           user: ${{ secrets.EC2_USER }}
           key: ${{ secrets.PEM}}
