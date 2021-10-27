@@ -19,6 +19,7 @@ jobs:
         uses: fifsky/ssh-action@master
         with:
           command: |
+            cd env
             ls
           host: ${{ secrets.EC2_HOST }}
           user: ${{ secrets.EC2_USER }}
