@@ -22,8 +22,7 @@ jobs:
             aws ecr get-login-password --region "eu-central-1" | sudo docker login --username AWS --password-stdin "081430054411.dkr.ecr.eu-central-1.amazonaws.com/random-postcard-ecr-repository"
             sudo docker pull "081430054411.dkr.ecr.eu-central-1.amazonaws.com/random-postcard-ecr-repository:latest"
             cd env
-            sudo docker run --env-file 1.env -p 80:8080 "081430054411.dkr.ecr.eu-central-1.amazonaws.com/random-postcard-ecr-repository:latest"
-            exit
+            sudo docker run --env-file 1.env -p 80:8080 "081430054411.dkr.ecr.eu-central-1.amazonaws.com/random-postcard-ecr-repository:latest" | exit
           host: ${{ secrets.EC2_HOST }}
           user: ${{ secrets.EC2_USER }}
           key: ${{ secrets.PEM}}
