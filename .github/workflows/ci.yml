@@ -15,14 +15,20 @@ jobs:
   pull_image:
     runs-on: ubuntu-latest
     steps:
-      - name: login
+      - name: enter remote server
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            ls
+          host: ${{ secrets.EC2_HOST }}
+          user: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.PEM}}
+      - name: login aws
         uses: fifsky/ssh-action@master
         with:
           command: |
             aws ecr get-login-password --region $AWS_DEFAULT_REGION
             docker login --username AWS --password-stdin $DOCKER_REPO
-            docker pull 081430054411.dkr.ecr.eu-central-1.amazonaws.com/random-postcard-ecr-repository:latest
-            docker run -p 80:8080 081430054411.dkr.ecr.eu-central-1.amazonaws.com/random-postcard-ecr-repository
           host: ${{ secrets.EC2_HOST }}
           user: ${{ secrets.EC2_USER }}
           key: ${{ secrets.PEM}}
