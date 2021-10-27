@@ -19,8 +19,10 @@ jobs:
         uses: fifsky/ssh-action@master
         with:
           command: |
+            aws ecr get-login-password --region "eu-central-1" | sudo docker login --username AWS --password-stdin "081430054411.dkr.ecr.eu-central-1.amazonaws.com/random-postcard-ecr-repository"
+            sudo docker pull "081430054411.dkr.ecr.eu-central-1.amazonaws.com/random-postcard-ecr-repository:latest"
             cd env
-            ls
+            sudo docker run --env-file 1.env -p 80:8080 "081430054411.dkr.ecr.eu-central-1.amazonaws.com/random-postcard-ecr-repository:latest"
           host: ${{ secrets.EC2_HOST }}
           user: ${{ secrets.EC2_USER }}
           key: ${{ secrets.PEM}}
