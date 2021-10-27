@@ -15,11 +15,12 @@ jobs:
   pull_image:
     runs-on: ubuntu-latest
     steps:
-      - name: ssh to remote server
-        run: echo ${KEY} | ssh -i /dev/stdin ${EC2_USER}@${EC2_HOST} command
-      - name: aws login, docker login
-        run: aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $DOCKER_REPO
-      - name: docker pull
-        run: docker pull "$DOCKER_REPO:latest"
-      - name: docker run
-        run: docker run -p 80:8080 $DOCKER_REPO
+      - name: ls -a via ssh
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            cd /tmp
+            ls -a
+          host: ${{ secrets.EC2_HOST }}
+          user: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.PEM}}
