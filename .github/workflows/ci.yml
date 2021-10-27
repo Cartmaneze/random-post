@@ -28,7 +28,7 @@ jobs:
         with:
           command: |
             aws ecr get-login-password --region "eu-central-1"
-            docker login --username AWS --password-stdin "081430054411.dkr.ecr.eu-central-1.amazonaws.com/random-postcard-ecr-repository"
+            sudo docker login --username AWS --password-stdin "081430054411.dkr.ecr.eu-central-1.amazonaws.com/random-postcard-ecr-repository"
           host: ${{ secrets.EC2_HOST }}
           user: ${{ secrets.EC2_USER }}
           key: ${{ secrets.PEM}}
