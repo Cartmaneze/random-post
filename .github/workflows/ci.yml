@@ -84,6 +84,7 @@ jobs:
           command: |
             aws ecr get-login-password --region ${{env.AWS_DEFAULT_REGION}} | sudo docker login --username AWS --password-stdin ${{env.DOCKER_REPO_HOST}}
             sudo docker pull ${{env.DOCKER_REPO_HOST}}:latest
+            sudo docker rmi -f $(sudo docker images ${{env.DOCKER_REPO_HOST}}:latest -a -q)
             sudo docker rm -f $(sudo docker ps -a -q --filter ancestor=${{env.DOCKER_REPO_HOST}}:latest --format="{{.ID}}")
             cd env
             sudo docker run --env-file 1.env -p 80:8080 ${{env.DOCKER_REPO_HOST}}:latest | exit
